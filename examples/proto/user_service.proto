@@ -1,0 +1,43 @@
+syntax = "proto3";
+
+package kubepie;
+
+option go_package = "pkg/api";
+
+import "google/protobuf/empty.proto";
+import "google/api/annotations.proto";
+
+service UserService {
+  rpc GetUsers(google.protobuf.Empty) returns (UserList) {
+    option (google.api.http) = {
+      get: "/api/users"
+    };
+  }
+  // FIXME: login_id should be a parameter
+  rpc GetUser(google.protobuf.Empty) returns (User) {
+    option (google.api.http) = {
+      get: "/api/users/{login_id}"
+    };
+  }
+  rpc CreateUser(User) returns (User) {
+    option (google.api.http) = {
+      post: "/api/users"
+      body: "*"
+    };
+  }
+  rpc DeleteUser(google.protobuf.Empty) returns (google.protobuf.Empty) {
+    option (google.api.http) = {
+      delete: "/api/users/{login_id}"
+    };
+  }
+}
+
+message UserList {
+  repeated User users = 1;
+}
+
+message User {
+  string loginId = 1;
+  string name = 2;
+  string email = 3;
+}
